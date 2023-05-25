@@ -16,6 +16,7 @@ email varchar(100) not null
 
 create table supernenechi(
 bno number not null PRIMARY KEY,
+id varchar2(50),
 title varchar(200),
 content VARCHAR2(1000),
 reg_date date default sysdate,
@@ -31,16 +32,41 @@ CREATE SEQUENCE supernenechi_seq --직원시퀀스
       NOCYCLE;
       
 -- 글추가 입력할때 사용하기.      
-INSERT INTO supernenechi (bno, title, content,  file1) 
+INSERT INTO supernenechi (bno, id, title, content,  file1) 
 VALUES
    ( supernenechi_seq.nextval
-   , '네네치의 방송이 보고싶어...'
-   , '오늘 밤 10시에 네네치의 마인크래프트 방송이 있다. '
+   ,'kuro'
+   , '심심하다'
+   , '심심해 '
    , null
    );
    
+INSERT INTO supernenechi (bno, id, title, content,  file1) 
+VALUES
+   ( supernenechi_seq.nextval
+   ,'ruru'
+   , '졸리다'
+   , '침대에서 자고싶네 ㅋㅋㅋ '
+   , null
+   );
+
+INSERT INTO supernenechi (bno, id, title, content,  file1) 
+VALUES
+   ( supernenechi_seq.nextval
+   ,'admin'
+   , '어서 퇴근하고 싶습니다. '
+   , '퇴근하면 좋겠다. '
+   , null
+   );
+
 insert into membership (id, pw, name, address, tel, email)
 values('kuro', 1234, 'people', '경기도 파주시 안양빌라 123-1' , '010-1345-6789', 'ai@naver.com');
+
+insert into membership (id, pw, name, address, tel, email)
+values('ruru', 1234, 'people1', '경기도 파주시 안양빌라 123-1' , '010-1345-6789', 'ai@naver.com');
+
+insert into membership (id, pw, name, address, tel, email)
+values('admin', 1234, 'people2', '경기도 파주시 안양빌라 123-1' , '010-1345-6789', 'ai@naver.com');
 
 
 ------insert join
@@ -54,8 +80,60 @@ SELECT s.bno, s.title, m.name, s.reg_date, s.cnt
 FROM supernenechi s
 JOIN membership m ON s.author_id = m.id;
 
+	
+		INSERT INTO supernenechi(
+			bno, title, content, file1)
+		values(
+			supernenechi_seq.nextval,
+			'as good as',
+			'very good',  
+			null
+		);
+	
+--- List Query
+select 
+    a.bno, a.title, b.name, a.reg_date, a.cnt
+from supernenechi a
+left outer join membership b
+on a.id  = b.id
+order by bno desc;
 
+-- read Query
+select 
+		    a.bno, a.title, b.name, a.reg_date, a.cnt
+		from 
+			supernenechi a
+		left outer join 
+			membership b
+		on 
+			a.id  = b.id
+		where
+			bno = '3'
+		order by bno DESC;
+        
+--update
+UPDATE supernenechi
+    SET title = '아이돌 네네치',
+        content = '슈퍼챗을 쏘자',
+        file1 = null
+    WHERE bno = 3;
 
+-- delete
+DELETE
+    FROM supernenechi
+WHERE bno = 11;
+
+---paging
+		select 
+		    bno, title, name, reg_date, cnt
+		from (
+		    SELECT a.bno, a.title, b.name, a.reg_date, a.cnt, row_number() over(ORDER BY BNO DESC) AS RNUM
+		    FROM supernenechi a
+		    left outer join membership b
+		    on a.id  = b.id
+		    ) np
+		where rnum between 1 and 10
+		order by bno DESC;
 
 select * from supernenechi;
 select * from membership;
