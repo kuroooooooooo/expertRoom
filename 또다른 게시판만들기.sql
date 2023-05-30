@@ -38,6 +38,7 @@ create table reply(
     bno number not null,
     rno number not null,
     id varchar2(50),
+    name varchar2(50),
     content varchar2(1000) not null,
     regdate date default sysdate,
     primary key(bno, rno)
@@ -56,6 +57,9 @@ minvalue 0;
 insert into reply(bno, rno, id, content)
 values(20,reply_seq.nextval,'admin', 'test reply');
 
+insert into reply(bno, rno, id, content)
+values(20,reply_seq.nextval,'ruru', 'test reply');
+
 select a.rno, a.content, b.name, a.regdate
     from reply a
    left outer join 
@@ -64,9 +68,38 @@ select a.rno, a.content, b.name, a.regdate
      a.id  = b.id
      where bno =20;
    
-    
 
-      
+-- insert reply
+insert into reply 
+    (bno, rno, content, id, name, regdate)
+		select 
+			12, reply_seq.nextval,'조아', a.id,  b.name, a.regdate
+   		from 
+   			reply a
+   		left outer join 
+    		membership b
+    	on 
+     		a.id  = b.id
+        where 1 =1 and a.name is null; 
+select * from reply;
+------ 야베사마의 쿼리문
+
+insert into reply 
+    (bno, rno, content, id, name, regdate)
+		values(
+			12, reply_seq.nextval,'조아', 'admin',
+            (
+            select name 
+            from membership 
+            where name is null), '23/05/30');
+   		
+        
+--update 
+update reply
+set content = '??はいつも一つ！'
+where rno = 5;
+
+     
 -- 글추가 입력할때 사용하기.      
 INSERT INTO supernenechi (bno, id, title, content,  file1) 
 VALUES
