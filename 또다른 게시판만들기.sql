@@ -6,26 +6,55 @@ drop table reply;
 drop sequence reply_seq;
 commit;
 
+--회원가입
 create table membership(
-id varchar2(50) PRIMARY KEY,
-pw varchar2(12) not null,
-name varchar(100) not null,
-address varchar(200) not null,
-tel varchar(15),
-email varchar(100) not null
+id varchar2(50) PRIMARY KEY, --회원아이디
+pw varchar2(12) not null,-- 패스워드
+name varchar(100),--이름
+address varchar(200),--주소
+tel varchar(15), --전화번호
+email varchar(100)-- 이메일
 );
 
-
+--게시판 
 create table supernenechi(
-bno number not null PRIMARY KEY,
-id varchar2(50),
-title varchar(200),
-content VARCHAR2(1000),
-regdate date default sysdate,
-cnt number default 0, 
-file1 varchar2 (100), 
-commend varchar2(1000)
+bno number not null PRIMARY KEY, --번호
+userid varchar2(50), --아이디
+title varchar(200), --게시글 제목
+content VARCHAR2(1000), --내용
+regdate date default sysdate, --날짜
+cnt number default 0, --추천수
+file1 varchar2 (100), --파일
+commend varchar2(1000), --코멘트(댓글)
+foreign key (userid) references membership(id) ON DELETE CASCADE--fk
 );
+
+--select list 
+		select 
+			bno, title, userid, regdate, cnt
+		from 
+			supernenechi
+		order by bno DESC;
+        
+        
+-- update
+update supernenechi
+set content = 'abcd'
+where bno = 1;
+-- delete 
+delete supernenechi
+
+
+
+commit;
+select * from membership;
+
+--index setting
+create index supernenechi_index
+on supernenechi(bno desc);
+
+select * from supernenechi;
+----------------
 
 CREATE SEQUENCE supernenechi_seq --직원시퀀스
       START WITH 1
@@ -35,73 +64,33 @@ CREATE SEQUENCE supernenechi_seq --직원시퀀스
       
     -------
 create table reply(
-    bno number not null,
-    rno number not null,
-    id varchar2(50),
-    name varchar2(50),
-    content varchar2(1000) not null,
-    regdate date default sysdate,
-    primary key(bno, rno)
+    bno number not null, --게시판 번호
+    rno number not null, -- 덧글 번호
+    userId varchar2(50), -- 아이디
+    content varchar2(1000) not null, --내용
+    regdate date default sysdate, --날짜
+    primary key(bno, rno), --pk
+    foreign key (userId) references membership (id) --fk
 );
-
-alter table reply add constraint reply_bno foreign key(bno)
-references supernenechi(bno);
-
-
 
 create SEQUENCE reply_seq 
 start with 1 
 minvalue 0;
 
--- reply test
-insert into reply(bno, rno, id, content)
-values(20,reply_seq.nextval,'admin', 'test reply');
-
-insert into reply(bno, rno, id, content)
-values(20,reply_seq.nextval,'ruru', 'test reply');
-
-select a.rno, a.content, b.name, a.regdate
-    from reply a
-   left outer join 
-    membership b
-    on 
-     a.id  = b.id
-     where bno =20;
-   
-
--- insert reply
-insert into reply 
-    (bno, rno, content, id, name, regdate)
-		select 
-			12, reply_seq.nextval,'조아', a.id,  b.name, a.regdate
-   		from 
-   			reply a
-   		left outer join 
-    		membership b
-    	on 
-     		a.id  = b.id
-        where 1 =1 and a.name is null; 
-select * from reply;
 ------ 야베사마의 쿼리문
 
 insert into reply 
-    (bno, rno, content, id, name, regdate)
+    (bno, rno, content, userid)
 		values(
-			12, reply_seq.nextval,'조아', 'admin',
-            (
-            select name 
-            from membership 
-            where name is null), '23/05/30');
-   		
+			265, reply_seq.nextval,'조아', 'admin');
+
+
+select * from reply where bno= 265;
         
---update 
-update reply
-set content = '??はいつも一つ！'
-where rno = 5;
 
      
 -- 글추가 입력할때 사용하기.      
-INSERT INTO supernenechi (bno, id, title, content,  file1) 
+INSERT INTO supernenechi (bno, userid, title, content,  file1) 
 VALUES
    ( supernenechi_seq.nextval
    ,'kuro'
@@ -110,7 +99,7 @@ VALUES
    , null
    );
    
-INSERT INTO supernenechi (bno, id, title, content,  file1) 
+INSERT INTO supernenechi (bno, userid, title, content,  file1) 
 VALUES
    ( supernenechi_seq.nextval
    ,'ruru'
@@ -119,7 +108,7 @@ VALUES
    , null
    );
 
-INSERT INTO supernenechi (bno, id, title, content,  file1) 
+INSERT INTO supernenechi (bno, userid, title, content,  file1) 
 VALUES
    ( supernenechi_seq.nextval
    ,'admin'
@@ -128,7 +117,7 @@ VALUES
    , null
    );
    
-INSERT INTO supernenechi (bno, id, title, content,  file1) 
+INSERT INTO supernenechi (bno, userid, title, content, file1) 
 VALUES
    ( supernenechi_seq.nextval
    ,'tei'
@@ -136,7 +125,30 @@ VALUES
    , '언제 집가지 항상 집이그리워'
    , null
    );
+-----
+insert into membership (
+		id, 
+		pw, 
+		name, 
+		address, 
+		tel, 
+		email )
+	values(
+		'pet', 
+		1234, 
+		'ohM', 
+		'경기도 시흥시 은행동 123-12', 
+		'010-1234-5678', 
+		'kkp@naver.com'
+	);
+select * from membership;
 
+insert into membership (
+			id, pw, name, address, tel, email)
+		values(
+		'sara', 1111, 'hosikawa', '도쿄 아키하바라현 어딘가' ,'010-4567-1234', 'hosikawa@naver.com');
+
+-- membership insert
 insert into membership (id, pw, name, address, tel, email)
 values('kuro', 1234, 'people', '경기도 파주시 안양빌라 123-1' , '010-1345-6789', 'ai@naver.com');
 
@@ -149,11 +161,14 @@ values('admin', 1234, 'people2', '경기도 파주시 안양빌라 123-1' , '010-1345-6789
 insert into membership (id, pw, name, address, tel, email)
 values('tei', 1234, 'kuro', '경기도 파주시 안양빌라 123-1' , '010-1345-6789', 'ai@naver.com');
 
+
+update membership
+set pw = 'abcd';
+commit;
+select * from membership;
+
 ------insert join
-INSERT INTO supernenechi (bno, title, content, file1)
-SELECT MAX(bno) + 1, '즐거운 학교생활', '학교는 즐거운 곳이에요 ', null
-FROM membership
-WHERE name = 'kuro';
+
 
 --- select join
 SELECT s.bno, s.title, m.name, s.reg_date, s.cnt
@@ -197,23 +212,41 @@ UPDATE supernenechi
         content = '슈퍼챗을 쏘자',
         file1 = null
     WHERE bno = 3;
-
+    
+        update 
+			supernenechi
+		set 
+			title = '왜 안될까',
+			content = '왜...어째서...?어쨰서?어쨰서?어쨰서?어쨰서?어쨰서?어쨰서?어쨰서?'
+		where 
+			bno = 10;
+select * from supernenechi;
 -- delete
 DELETE
     FROM supernenechi
-WHERE bno = 66;
-
+WHERE bno = 266;
+select*from supernenechi;
 ---paging
 		select 
-		    bno, title, name, reg_date, cnt
+			bno, title, userid, regdate, cnt
 		from (
-		    SELECT a.bno, a.title, b.name, a.reg_date, a.cnt, row_number() over(ORDER BY BNO DESC) AS RNUM
-		    FROM supernenechi a
-		    left outer join membership b
-		    on a.id  = b.id
-		    ) np
-		where rnum between 1 and 10
+			SELECT 
+				 bno, title, userid, regdate, cnt, 
+				 row_number() over(ORDER BY BNO DESC) AS RNUM
+			FROM 
+				supernenechi 
+			)np
+		WHERE rnum BETWEEN 1 and 10
 		order by bno DESC;
+
+        SELECT
+			id, pw
+		FROM
+			membership
+		WHERE 
+			id = 'hosikawaaaaa'
+		AND pw = 1234;
+
 
 select * from supernenechi;
 select * from membership;
