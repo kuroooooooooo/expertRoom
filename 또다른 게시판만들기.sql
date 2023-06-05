@@ -77,6 +77,28 @@ create SEQUENCE reply_seq
 start with 1 
 minvalue 0;
 
+
+--file table
+create table neneFile(
+    fileno number, -- 파일번호
+    bno number not null, -- 게시판 번호
+    orgFileN varchar2(300) not null, --원본 파일 이름
+    hFileN varchar2(36) not null, -- 변경된 파일 이름
+    fileS number, -- 파일크기
+    regdate date default sysdate not null, --파일등록일
+    delgb varchar2(1) default 'N' not null, --삭제구분
+    primary key(fileno) --기본키 fileno
+);
+
+create sequence nenefile_seq
+start with 1
+increment by 1
+nomaxvalue nocache;
+
+commit;
+
+
+
 ------ 야베사마의 쿼리문
 
 insert into reply 
@@ -224,7 +246,7 @@ select * from supernenechi;
 -- delete
 DELETE
     FROM supernenechi
-WHERE bno = 266;
+WHERE bno = 283;
 select*from supernenechi;
 ---paging
 		select 
@@ -251,3 +273,12 @@ select*from supernenechi;
 select * from supernenechi;
 select * from membership;
 commit;
+
+
+
+-- 조회수 
+ALTER TABLE supernenechi ADD(HIT NUMBER DEFAULT 0);
+COMMIT;
+
+
+-- 
