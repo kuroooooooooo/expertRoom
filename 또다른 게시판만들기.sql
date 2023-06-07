@@ -1,9 +1,10 @@
-delete from board;
+-- drop
 drop table supernenechi;
 drop table membership;
 drop SEQUENCE supernenechi_seq;
 drop table reply;
 drop sequence reply_seq;
+drop table neneFile;
 commit;
 
 --회원가입
@@ -273,12 +274,32 @@ select*from supernenechi;
 select * from supernenechi;
 select * from membership;
 commit;
+-- delete membership
+
+DELETE 
+			FROM membership
+			WHERE id= 'tei'
+			  AND pw= '1234';
+
+--membership update
+
+    UPDATE membership
+		SET
+			pw ='0101',
+			name ='키왕짱',
+			address = '알아서 뭐할거야',
+			tel='010-7744-1002',
+			email='YangNari@Nizisanji@nijisanji.jp'
+		WHERE id='ruru';
 
 
-
--- 조회수 
-ALTER TABLE supernenechi ADD(HIT NUMBER DEFAULT 0);
-COMMIT;
-
-
+INSERT INTO supernenechi (
+		bno, userid, title, content, file1
+		) VALUES( 
+		supernenechi_seq.nextval
+		,'kuro'
+		,'즐거운 우리집'
+		,'우리집은 즐거워'
+		, null);
+select * from supernenechi;
 -- 
