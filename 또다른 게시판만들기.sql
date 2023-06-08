@@ -303,3 +303,16 @@ INSERT INTO supernenechi (
 		, null);
 select * from supernenechi;
 -- 
+
+
+-- passChk
+SELECT 1 
+		FROM membership
+;
+
+SELECT COUNT(*) 
+		FROM membership
+		WHERE id = 'mini'
+		  AND pw = '1234';
+
+
