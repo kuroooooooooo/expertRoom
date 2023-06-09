@@ -184,6 +184,8 @@ values('admin', 1234, 'people2', '경기도 파주시 안양빌라 123-1' , '010-1345-6789
 insert into membership (id, pw, name, address, tel, email)
 values('tei', 1234, 'kuro', '경기도 파주시 안양빌라 123-1' , '010-1345-6789', 'ai@naver.com');
 
+insert into membership (id, pw, name, address, tel, email)
+values('kuroi', 1234, 'kuroi', '경기도 파주시 안양빌라 123-1' , '010-1345-6789', 'ai@naver.com');
 
 update membership
 set pw = 'abcd';
@@ -314,5 +316,9 @@ SELECT COUNT(*)
 		FROM membership
 		WHERE id = 'mini'
 		  AND pw = '1234';
+          
+SELECT COUNT(*)
+		FROM membership
+		WHERE id = 'kuroneko';
 
 
