@@ -4,7 +4,6 @@ drop table membership;
 drop SEQUENCE supernenechi_seq;
 drop table reply;
 drop sequence reply_seq;
-drop table neneFile;
 commit;
 
 --회원가입
@@ -37,15 +36,6 @@ foreign key (userid) references membership(id) ON DELETE CASCADE--fk
 			supernenechi
 		order by bno DESC;
         
-        
--- update
-update supernenechi
-set content = 'abcd'
-where bno = 1;
--- delete 
-delete supernenechi
-
-
 
 commit;
 select * from membership;
@@ -79,22 +69,6 @@ start with 1
 minvalue 0;
 
 
---file table
-create table neneFile(
-    fileno number, -- 파일번호
-    bno number not null, -- 게시판 번호
-    orgFileN varchar2(300) not null, --원본 파일 이름
-    hFileN varchar2(36) not null, -- 변경된 파일 이름
-    fileS number, -- 파일크기
-    regdate date default sysdate not null, --파일등록일
-    delgb varchar2(1) default 'N' not null, --삭제구분
-    primary key(fileno) --기본키 fileno
-);
-
-create sequence nenefile_seq
-start with 1
-increment by 1
-nomaxvalue nocache;
 
 commit;
 
@@ -165,6 +139,7 @@ insert into membership (
 		'kkp@naver.com'
 	);
 select * from membership;
+select * from supernenechi;
 
 insert into membership (
 			id, pw, name, address, tel, email)
@@ -280,7 +255,7 @@ commit;
 
 DELETE 
 			FROM membership
-			WHERE id= 'tei'
+			WHERE id= 'ruru'
 			  AND pw= '1234';
 
 --membership update
@@ -304,6 +279,7 @@ INSERT INTO supernenechi (
 		,'우리집은 즐거워'
 		, null);
 select * from supernenechi;
+select * from membership;
 -- 
 
 
@@ -322,3 +298,4 @@ SELECT COUNT(*)
 		WHERE id = 'kuroneko';
 
 
+delete 
